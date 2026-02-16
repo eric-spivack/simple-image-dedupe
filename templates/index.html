@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Dedupe</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+</head>
+<body>
+    <header>
+        <h1>Image Dedupe</h1>
+        <p>Find and remove duplicate images</p>
+    </header>
+
+    <main>
+        <form hx-post="/api/scan" hx-target="#results" hx-swap="innerHTML" hx-indicator="#spinner">
+            <div class="form-row">
+                <label for="directory">Directory</label>
+                <input type="text" id="directory" name="directory" placeholder="/path/to/images" required>
+            </div>
+            <div class="form-row">
+                <label for="method">Method</label>
+                <select id="method" name="method">
+                    <option value="exact">Exact (SHA-256)</option>
+                    <option value="phash">Perceptual (pHash)</option>
+                    <option value="dhash">Perceptual (dHash)</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label for="threshold">Threshold</label>
+                <input type="number" id="threshold" name="threshold" value="5" min="0" max="20">
+                <span class="hint">Hamming distance for perceptual methods (ignored for exact)</span>
+            </div>
+            <button type="submit">Scan</button>
+        </form>
+
+        <div id="spinner" class="htmx-indicator">Scanning...</div>
+        <div id="results"></div>
+    </main>
+</body>
+</html>

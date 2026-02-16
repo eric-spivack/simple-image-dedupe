@@ -1,0 +1,21 @@
+<div class="group-card" id="group-{{ group.id }}">
+    <h3>Group: {{ group.id }} <span class="badge">{{ group.method }}</span></h3>
+    <form hx-post="/api/action" hx-target="#group-{{ group.id }}" hx-swap="outerHTML">
+        <input type="hidden" name="group_id" value="{{ group.id }}">
+        <div class="image-grid">
+            {% for img in group.images %}
+            <label class="image-option {{ 'suggested' if loop.index0 == group.suggested_keep }}">
+                <input type="radio" name="keep" value="{{ encode_image_id(img.path) }}"
+                    {{ "checked" if loop.index0 == group.suggested_keep }}>
+                <img src="/api/thumbnail/{{ encode_image_id(img.path) }}" alt="{{ img.path.name }}" loading="lazy">
+                <div class="image-meta">
+                    <span class="filename" title="{{ img.path }}">{{ img.path.name }}</span>
+                    <span>{{ img.width }}x{{ img.height }}</span>
+                    <span>{{ "%.1f"|format(img.file_size / 1024) }} KB</span>
+                </div>
+            </label>
+            {% endfor %}
+        </div>
+        <button type="submit" class="resolve-btn">Keep Selected, Trash Others</button>
+    </form>
+</div>

@@ -1,0 +1,7 @@
+<div class="scan-summary">
+    Found {{ groups|length }} duplicate group{{ "s" if groups|length != 1 }} among {{ total }} images.
+</div>
+
+{% for group in groups %}
+{% include "partials/group_card.html" %}
+{% endfor %}

@@ -1,0 +1,7 @@
+<div class="group-card resolved" id="group-{{ group_id }}">
+    <h3>Group: {{ group_id }} <span class="badge done">Resolved</span></h3>
+    <p>Kept <strong>{{ kept.name }}</strong>, moved {{ moved_count }} file{{ "s" if moved_count != 1 }} to trash.</p>
+    <button hx-post="/api/undo/{{ group_id }}" hx-target="#group-{{ group_id }}" hx-swap="outerHTML" class="undo-btn">
+        Undo
+    </button>
+</div>

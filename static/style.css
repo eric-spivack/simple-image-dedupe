@@ -1,0 +1,221 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 1rem;
+    background: #f5f5f5;
+    color: #333;
+}
+
+header {
+    margin-bottom: 1.5rem;
+}
+
+header h1 {
+    font-size: 1.5rem;
+}
+
+header p {
+    color: #666;
+}
+
+form {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-bottom: 1rem;
+}
+
+.form-row {
+    margin-bottom: 0.75rem;
+}
+
+.form-row label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.form-row input[type="text"],
+.form-row input[type="number"],
+.form-row select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.form-row input[type="number"] {
+    width: 80px;
+}
+
+.form-row .hint {
+    display: block;
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 0.25rem;
+}
+
+button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+button[type="submit"] {
+    background: #2563eb;
+    color: #fff;
+}
+
+button[type="submit"]:hover {
+    background: #1d4ed8;
+}
+
+.htmx-indicator {
+    display: none;
+    padding: 1rem;
+    color: #666;
+    font-style: italic;
+}
+
+.htmx-request .htmx-indicator,
+.htmx-request.htmx-indicator {
+    display: block;
+}
+
+.scan-summary {
+    padding: 0.75rem;
+    background: #dbeafe;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.error {
+    padding: 0.75rem;
+    background: #fee2e2;
+    color: #b91c1c;
+    border-radius: 6px;
+}
+
+.info {
+    padding: 0.75rem;
+    background: #dbeafe;
+    border-radius: 6px;
+}
+
+.group-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.group-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.badge {
+    font-size: 0.75rem;
+    background: #e5e7eb;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-weight: 400;
+}
+
+.badge.done {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.image-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.image-option {
+    border: 2px solid transparent;
+    border-radius: 6px;
+    padding: 0.5rem;
+    cursor: pointer;
+    max-width: 200px;
+    transition: border-color 0.15s;
+}
+
+.image-option:has(input:checked) {
+    border-color: #2563eb;
+    background: #eff6ff;
+}
+
+.image-option.suggested {
+    outline: 2px dashed #16a34a;
+    outline-offset: 2px;
+}
+
+.image-option input[type="radio"] {
+    display: none;
+}
+
+.image-option img {
+    width: 100%;
+    height: 150px;
+    object-fit: contain;
+    background: #f9fafb;
+    border-radius: 4px;
+}
+
+.image-meta {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.image-meta span {
+    display: block;
+}
+
+.image-meta .filename {
+    font-weight: 500;
+    color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.resolve-btn {
+    background: #dc2626;
+    color: #fff;
+}
+
+.resolve-btn:hover {
+    background: #b91c1c;
+}
+
+.resolved {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+.undo-btn {
+    background: #6b7280;
+    color: #fff;
+}
+
+.undo-btn:hover {
+    background: #4b5563;
+}
