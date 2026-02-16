@@ -54,7 +54,9 @@ async def api_scan(
         return HTMLResponse(f'<div class="error">{e}</div>')
 
     if not paths:
-        return HTMLResponse('<div class="info">No images found in this directory.</div>')
+        return HTMLResponse(
+            '<div class="info">No images found in this directory.</div>'
+        )
 
     scan_root = Path(directory).resolve()
     groups = group_duplicates(paths, method=method, threshold=threshold)
