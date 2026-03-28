@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Dedupe</title>
     <link rel="stylesheet" href="/static/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://unpkg.com/htmx.org@2.0.4"></script>
 </head>
 <body>
@@ -16,8 +17,18 @@
     <main>
         <form hx-post="/api/scan" hx-target="#results" hx-swap="innerHTML" hx-indicator="#spinner">
             <div class="form-row">
-                <label for="directory">Directory</label>
-                <input type="text" id="directory" name="directory" placeholder="/path/to/images" required>
+                <label for="dir">Directory</label>
+                <div class="autocomplete-wrapper">
+                    <input type="text" id="dir" name="dir" placeholder="/path/to/images" required
+                           hx-get="/api/path-autocomplete"
+                           hx-trigger="keyup changed delay:300ms"
+                           hx-target="#autocomplete-results"
+                           hx-include="this"
+                           autocomplete="off"
+                           aria-autocomplete="list"
+                           aria-controls="autocomplete-results">
+                    <div id="autocomplete-results" role="listbox" aria-label="Directory suggestions" aria-live="polite"></div>
+                </div>
             </div>
             <div class="form-row">
                 <label for="method">Method</label>
@@ -38,5 +49,6 @@
         <div id="spinner" class="htmx-indicator">Scanning...</div>
         <div id="results"></div>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

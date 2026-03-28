@@ -37,6 +37,10 @@ form {
     margin-bottom: 0.75rem;
 }
 
+.autocomplete-wrapper {
+    position: relative;
+}
+
 .form-row label {
     display: block;
     font-weight: 600;

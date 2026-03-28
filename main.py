@@ -75,7 +75,7 @@ async def api_path_autocomplete(request: Request, dir: str = ""):
 @app.post("/api/scan", response_class=HTMLResponse)
 async def api_scan(
     request: Request,
-    directory: str = Form(...),
+    directory: str = Form(..., alias="dir"),
     method: str = Form("exact"),
     threshold: int = Form(5),
 ):
