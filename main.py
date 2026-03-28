@@ -12,6 +12,31 @@ from PIL import Image
 from hasher import DuplicateGroup, group_duplicates
 from scanner import scan_directory
 
+
+def resolve_path_suggestions(partial_path: str, limit: int = 20) -> list[str]:
+    try:
+        path = Path(partial_path).expanduser()
+
+        if path.is_dir():
+            subdirs = [str(p) for p in path.iterdir() if p.is_dir()]
+        else:
+            parent = path.parent
+            if not parent.is_dir():
+                return []
+
+            name_prefix = path.name
+            subdirs = [
+                str(p)
+                for p in parent.iterdir()
+                if p.is_dir() and p.name.startswith(name_prefix)
+            ]
+
+        return sorted(subdirs)[:limit]
+
+    except (PermissionError, FileNotFoundError, OSError):
+        return []
+
+
 app = FastAPI(title="simple-image-dedupe")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
@@ -22,6 +47,21 @@ trash_log: dict[str, list[dict]] = {}  # group_id -> [{src, dest}, ...]
 scan_root: Path | None = None
 
 TRASH_DIR_NAME = ".dedupe_trash"
+
+
+@app.get("/api/path-autocomplete", response_class=HTMLResponse)
+async def path_autocomplete(request: Request, dir: str = "") -> str:
+    """
+    Return HTML suggestions for a partial directory path.
+
+    Query param: dir (partial path)
+    Returns: HTML fragment (Bootstrap dropdown or empty)
+    """
+    suggestions = resolve_path_suggestions(dir, limit=20)
+
+    return templates.TemplateResponse(
+        request, "partials/path_suggestions.html", {"matches": suggestions}
+    )
 
 
 def encode_image_id(path: Path) -> str:
