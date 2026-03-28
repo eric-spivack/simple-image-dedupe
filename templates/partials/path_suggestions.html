@@ -1,0 +1,15 @@
+{% if matches %}
+<ul class="dropdown-menu show" style="width: 100%; position: absolute; top: 100%; left: 0; max-height: 300px; overflow-y: auto;">
+  {% for path in matches %}
+  <li>
+    <a class="dropdown-item" href="#"
+       data-path="{{ path }}"
+       onclick="document.getElementById('dir').value=this.dataset.path;
+                document.getElementById('autocomplete-results').innerHTML='';
+                return false;">
+      {{ path }}
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
