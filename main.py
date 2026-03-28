@@ -49,21 +49,6 @@ scan_root: Path | None = None
 TRASH_DIR_NAME = ".dedupe_trash"
 
 
-@app.get("/api/path-autocomplete", response_class=HTMLResponse)
-async def path_autocomplete(request: Request, dir: str = "") -> str:
-    """
-    Return HTML suggestions for a partial directory path.
-
-    Query param: dir (partial path)
-    Returns: HTML fragment (Bootstrap dropdown or empty)
-    """
-    suggestions = resolve_path_suggestions(dir, limit=20)
-
-    return templates.TemplateResponse(
-        request, "partials/path_suggestions.html", {"matches": suggestions}
-    )
-
-
 def encode_image_id(path: Path) -> str:
     return base64.urlsafe_b64encode(str(path).encode()).decode()
 
@@ -75,6 +60,16 @@ def decode_image_id(image_id: str) -> Path:
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     return templates.TemplateResponse(request, "index.html")
+
+
+@app.get("/api/path-autocomplete", response_class=HTMLResponse)
+async def api_path_autocomplete(request: Request, dir: str = ""):
+    suggestions = resolve_path_suggestions(dir, limit=20)
+    return templates.TemplateResponse(
+        request,
+        "partials/path_suggestions.html",
+        {"matches": suggestions},
+    )
 
 
 @app.post("/api/scan", response_class=HTMLResponse)
