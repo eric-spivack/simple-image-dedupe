@@ -1,5 +1,8 @@
 import base64
+import os
+import re
 import shutil
+import sys
 from pathlib import Path
 
 import uvicorn
@@ -13,12 +16,63 @@ from hasher import DuplicateGroup, group_duplicates
 from scanner import scan_directory
 
 
-def resolve_path_suggestions(partial_path: str, limit: int = 20) -> list[str]:
+_WINDOWS_PATH_RE = re.compile(r"^([a-zA-Z]):[/\\]?(.*)", re.DOTALL)
+
+
+def _is_wsl() -> bool:
     try:
-        path = Path(partial_path).expanduser()
+        return "microsoft" in Path("/proc/version").read_text().lower()
+    except OSError:
+        return False
+
+
+_MNT_PATH_RE = re.compile(r"^/mnt/([a-z])(?:/(.*))?$")
+
+
+def _normalize_path(path_str: str) -> str:
+    match = _WINDOWS_PATH_RE.match(path_str)
+    if not match:
+        return path_str
+    drive = match.group(1).lower()
+    rest = match.group(2).replace("\\", "/")
+    if sys.platform == "win32":
+        return f"{drive.upper()}:/{rest}" if rest else f"{drive.upper()}:/"
+    if _is_wsl():
+        return f"/mnt/{drive}/{rest}" if rest else f"/mnt/{drive}/"
+    return path_str
+
+
+def _to_windows_path(path_str: str) -> str:
+    match = _MNT_PATH_RE.match(path_str)
+    if not match:
+        return path_str
+    drive = match.group(1).upper()
+    rest = (match.group(2) or "").replace("/", "\\")
+    return f"{drive}:\\{rest}" if rest else f"{drive}:\\"
+
+
+def _iter_subdirs(path: Path) -> list[str]:
+    result = []
+    try:
+        with os.scandir(str(path)) as it:
+            for entry in it:
+                try:
+                    if entry.is_dir():
+                        result.append(entry.path)
+                except OSError:
+                    pass
+    except OSError:
+        pass
+    return result
+
+
+def resolve_path_suggestions(partial_path: str, limit: int = 20) -> list[str]:
+    use_windows_format = bool(_WINDOWS_PATH_RE.match(partial_path))
+    try:
+        path = Path(_normalize_path(partial_path)).expanduser()
 
         if path.is_dir():
-            subdirs = [str(p) for p in path.iterdir() if p.is_dir()]
+            subdirs = _iter_subdirs(path)
         else:
             parent = path.parent
             if not parent.is_dir():
@@ -26,12 +80,13 @@ def resolve_path_suggestions(partial_path: str, limit: int = 20) -> list[str]:
 
             name_prefix = path.name
             subdirs = [
-                str(p)
-                for p in parent.iterdir()
-                if p.is_dir() and p.name.startswith(name_prefix)
+                p for p in _iter_subdirs(parent) if Path(p).name.startswith(name_prefix)
             ]
 
-        return sorted(subdirs)[:limit]
+        results = sorted(subdirs)[:limit]
+        if use_windows_format:
+            return [_to_windows_path(r) for r in results]
+        return results
 
     except (PermissionError, FileNotFoundError, OSError):
         return []
